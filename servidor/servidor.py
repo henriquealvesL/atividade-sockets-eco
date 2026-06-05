@@ -11,8 +11,9 @@ from datetime import datetime
 
 
 def log(msg):
-    ts = datetime.now().isoformat(timespec='microseconds')
+    ts = datetime.now().isoformat(timespec="microseconds")
     print(f"[{ts}] {msg}")
+
 
 # Endereço e porta onde o servidor vai escutar.
 # "0.0.0.0" significa: aceitar conexões de qualquer interface de rede.
@@ -22,7 +23,7 @@ PORTA = 5000
 # Tamanho máximo (em bytes) de cada mensagem recebida.
 TAMANHO_BUFFER = 1024
 
-# Contador de mensagens recebidas 
+# Contador de mensagens recebidas
 total_mensagens = 0
 
 
@@ -42,7 +43,6 @@ def iniciar_servidor():
     servidor_socket.listen(5)
 
     log(f"[SERVIDOR] Escutando em {HOST}:{PORTA} ...")
-
     while True:
         # 4. Aguardar e aceitar uma nova conexão de cliente
         conn, endereco_cliente = servidor_socket.accept()
@@ -52,16 +52,17 @@ def iniciar_servidor():
         dados = conn.recv(TAMANHO_BUFFER)
 
         if dados:
+            total_mensagens += 1
             mensagem = dados.decode("utf-8")
             log(f"[SERVIDOR] Mensagem recebida: '{mensagem}'")
-
             # 6. Devolver a mensagem ao cliente (eco)
-            resposta = mensagem
+            resposta = mensagem.upper()
             conn.sendall(resposta.encode("utf-8"))
             log(f"[SERVIDOR] Eco enviado: '{resposta}'")
 
         # 7. Encerrar a conexão com este cliente
         conn.close()
+        log(f"[SERVIDOR] Contador de mensagens: {total_mensagens}")
         log(f"[SERVIDOR] Conexão com {endereco_cliente} encerrada.")
 
 
